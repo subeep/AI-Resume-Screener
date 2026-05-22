@@ -1,0 +1,15 @@
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+python-multipart==0.0.9
+python-dotenv>=1.0.0
+PyPDF2==3.0.1
+docx2txt==0.8
+nltk==3.9.1
+spacy==3.7.6
+chromadb==0.5.15
+requests==2.32.3
+pandas==2.2.3
+xlsxwriter==3.2.0
+numpy==1.26.4
+urllib3==2.2.3
+google-genai>=1.0.0
