@@ -122,9 +122,26 @@ export interface Candidate {
 // ── API calls ─────────────────────────────────────────────────────────────────
 
 export async function fetchHealth(): Promise<HealthResponse> {
-  const res = await fetch(`${BASE}/health`);
-  if (!res.ok) throw new Error("Backend unreachable");
-  return res.json();
+  const MAX_RETRIES = 3;
+  const TIMEOUT_MS  = 15_000; // 15s per attempt (Render cold start can take 30-60s)
+
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
+      const res = await fetch(`${BASE}/health`, { signal: controller.signal });
+      clearTimeout(timer);
+
+      if (!res.ok) throw new Error("Backend unreachable");
+      return res.json();
+    } catch (err) {
+      if (attempt === MAX_RETRIES) throw err;
+      // Wait 2s before retrying (give Render time to spin up)
+      await new Promise((r) => setTimeout(r, 2000));
+    }
+  }
+  throw new Error("Backend unreachable after retries");
 }
 
 export async function analyzeResumes(

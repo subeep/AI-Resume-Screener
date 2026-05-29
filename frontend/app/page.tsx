@@ -77,7 +77,7 @@ export default function Home() {
         <div className="hero-chips">
           <div className={`status-chip ${health?.gemini_configured ? "status-ok" : "status-err"}`}>
             {health === null
-              ? "⏳ Checking backend…"
+              ? "⏳ Waking up backend (free tier — may take 30-60s)…"
               : health.gemini_configured
               ? `✅ Gemini AI connected · ${health.model}`
               : "❌ Gemini API key not configured"}
